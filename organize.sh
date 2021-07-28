@@ -1,48 +1,83 @@
 #!/bin/bash
 
-# Go to the downloads folder
-# cd Downloads 
+# Author: Deville_ee
+# Edit  : Deville_ee
+# Creation date : 28-07-2021
 
-echo "Organizing your messy downloads folder"
+About="This script organizes a specific target folder by file types and moves the into a desinated folder"
 
-# First Create Some General Folders 
-mkdir Audio_Files Video_Files PDFs Word_Docs Powerpoints Scripts Image_Files Spreadsheets Notebooks Debian_Files TXZ_Files Compressed_Files
+#Specify the target folder
+target_folder="$HOME/Downloads"
 
-# Audio Files 
-mv *.mp3 *.m4a *.flac *.aac *.ogg *.wav Audio_Files
+audio_f="Audio_files"
+video_f="Video_files"
+pdf_f="PDF_files"
+docs_f="Word_docs"
+power_f="Powerpoints"
+scripts_f="Scripts"
+image_f="Image_files"
+note_f="Notebooks_files"
+pack_f="Debian_files"
+archive_f="Compressed_files"
+rar_f="TXZ_files"
 
-# Video Files 
-mv *.mp4 *.mov *.avi *.mpg *.mpeg *.webm *.mpv *.mp2 *.wmv Video_Files
+folder_array=( "${audio_f}" "${video_f}" "${pdf_f}" "${docs_f}" "${power_f}" "${script_f}" "${image_f}" "${spread_f}" "${note_f}" "${debian_f}" "${compr_f}" "${txz_f}")
 
-# PDFs 
-mv *.pdf PDFs
+audio_array=( "*.mp3" "*.m4a" "*.flac" "*.aac" "*.ogg" "*.wav" )
+video_array=("*.mp4" "*.mov" "*.avi" "*.mpg" "*.mpeg" "*.webm" "*.mpv" "*.mp2" "*.wmv" )
+pdf_array=("*.pdf")
+docs_array=("*.doc" "*.docx" "*.txt" "*.odt" "*.xls")
+power_f=("*.ppt" "*.pptx")
+scripts_array=("*.py" "*.rb" "*.sh")
+image_array=( "*.png" "*.jpg" "*.jpeg" "*.tif" "*.tiff" "*.bpm" "*.gif" "*.eps" "*.raw" )
+note_array=("*.ipynb")
+pack_array=("*.deb" "*.pkg.tar.xz" )
+archive_array=("*.tar.*" "*.xz" "*.txz" "*.tgz" "*.7z")
+rar_array=("*.zip" "*.rar" "*.iso" "*.img" )
 
-# Word Docs and txt files
-mv *.doc *.docx *.txt *.odt Word_Docs
+echo "Organizing your messy ${target_folder} folder"
 
-# Powerpoints
-mv *.ppt *.pptx Powerpoints
+function create_folder()
+{
+    if [[ ! -d "${1}"  ]]
+    then
+        mkdir -p "${1}"
+    fi
+}
 
-# Scripts
-mv *.py *.rb *.sh Scripts
+export -f create_folder
 
-# Image Files
-mv *.png *.jpg *.jpeg *.tif *.tiff *.bpm *.gif *.eps *.raw Image_Files
+function move_file()
+{
+    create_folder "${2}"
+    mv "${1}" "${2}"
+}
 
-# Notebooks
-mv *.ipynb Notebooks
+export -f move_file
 
-#Debian File 
-mv *.deb Debian_Files
+function sorting()
+{
+    arr=("$@")
+    arr_len=${#arr[@]}
 
-#TXZ_Files
-mv *.tar.* *.xz *.txz *.tgz TXZ_Files
+    for (( i=1; i<${arr_len} ; i++ ))
+    do
+       find "${target_folder}" -maxdepth 1 -path "${target_folder}/${1}" -prune -false -o -iname "${arr[$i]}"  -exec /bin/bash -c "move_file '{}' \"${target_folder}/${1}\"" \;
+    done
+}
 
-#RAR Files
-mv *.zip *.rar Compressed_Files
-
-cd Scripts
-mv organize.sh .. #the organize script is also sorted into the scripts folder, so take it out.
-cd ..
+#Audio Files
+sorting "${audio_f}"    "${audio_array[@]}"
+sorting "${video_f}"    "${video_array[@]}"
+sorting "${pdf_f}"      "${pdf_array[@]}"
+sorting "${power_f}"    "${power_array[@]}"
+sorting "${docs_f}"     "${docs_array[@]}"
+sorting "${scripts_f}"  "${scripts_array[@]}"
+sorting "${image_f}"    "${image_array[@]}"
+sorting "${note_f}"     "${note_array[@]}"
+sorting "${pack_f}"     "${pack_array[@]}"
+sorting "${archive_f}"  "${archive_array[@]}"
+sorting "${rar_f}"      "${rar_array[@]}"
 
 echo "All sorted!!"
+
