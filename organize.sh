@@ -5,7 +5,7 @@
 # Edit  : Deville_ee
 # Creation date : 28-07-2021
 
-About="This script organizes a specific target folder by file types and moves these into a desinated folder"
+About="This script organizes a specific target folder by file types and moves these into a designated folder"
 
 #Specify the target folder
 target_folder="$HOME/Downloads"
