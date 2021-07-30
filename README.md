@@ -1,6 +1,6 @@
-# ORGANIZE V1
+# ORGANIZE V2
 This is a simple script to organize my downloads folder. 
 
 Feel free to clone and change stuff where you see fit. Cheers. 
 
--W3NDO
+Original Credits to W3NDO
