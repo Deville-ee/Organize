@@ -3,23 +3,38 @@
 # Author: Deville_ee
 # Edit  : Deville_ee
 # Creation date : 28-07-2021
+# Edit date : 30-07-2021
+
+version="2.1"
+
+# Version 2.1 # Add extra function for the creation of your personal folders. Add Your folders to the "extra_folders" array
+# Version 2   # Forked the original W3NDO script https://github.com/W3NDO/Organize and add a routine for the file organisation. In this way only folders which are needed are created. 
+
+# Todo : Determine a system to conquer the perpetual choice if the files are rubbish or not. The idea of distributing these into specialized folder's root can make a good start.
+#        This will keep in fact your Downloads folder clean and forces you to maintain a folder structure in the other parts of your $HOME folder.
+#
+# Idea :  Remove the folders which became empty? Maybe keep a list of previous folder structure in order to re-install a previous folder structure.
+# 
+
 
 About="This script organizes a specific target folder by file types and moves the into a desinated folder"
 
 #Specify the target folder
 target_folder="$HOME/Downloads"
 
-audio_f="Audio_files"
-video_f="Video_files"
-pdf_f="PDF_files"
-docs_f="Word_docs"
-power_f="Powerpoints"
-scripts_f="Scripts"
-image_f="Image_files"
-note_f="Notebooks_files"
-pack_f="Debian_files"
-archive_f="Compressed_files"
-rar_f="TXZ_files"
+audio_f="$HOME/Music"
+video_f="$HOME/Videos"
+pdf_f="$HOME/Documents/Office/PDF_Files"
+docs_f="$HOME/Documents/Office/Word_Docs"
+power_f="$HOME/Documents/Office/Powerpoints"
+scripts_f="$HOME/Documents/Script_Collection"
+image_f="$HOME/Pictures"
+note_f="$HOME/Documents/Office/Notebooks_Files"
+pack_f="$HOME/Documents/Archives/Debians"
+archive_f="$HOME/Documents/Archives/Tarballs"
+rar_f="$HOME/Documents/Archives/Compresses_Files"
+
+extra_folders=("$HOME/bin" "$HOME/Virtual_Machines" "$HOME/Documents/Software/Linux" "$HOME/Documents/Personal/" "$HOME/Documents/Office/Text_Files" "$HOME/Documents/Secure" "$HOME/Workspace" "$HOME/Documents/Work" "$HOME/Pictures/Work" )
 
 folder_array=( "${audio_f}" "${video_f}" "${pdf_f}" "${docs_f}" "${power_f}" "${script_f}" "${image_f}" "${spread_f}" "${note_f}" "${debian_f}" "${compr_f}" "${txz_f}")
 
@@ -35,7 +50,7 @@ pack_array=("*.deb" "*.pkg.tar.xz" )
 archive_array=("*.tar.*" "*.xz" "*.txz" "*.tgz" "*.7z")
 rar_array=("*.zip" "*.rar" "*.iso" "*.img" )
 
-echo "Organizing your messy ${target_folder} folder"
+
 
 function create_folder()
 {
@@ -65,6 +80,25 @@ function sorting()
        find "${target_folder}" -maxdepth 1 -path "${target_folder}/${1}" -prune -false -o -iname "${arr[$i]}"  -exec /bin/bash -c "move_file '{}' \"${target_folder}/${1}\"" \;
     done
 }
+
+function create_extra_folders()
+{
+    arr=("$@")
+    arr_len=${#arr[@]}
+
+    for (( i=0; i<${arr_len}; i++ ))
+    do
+        if [[ ! -d "${arr[$i]}" ]]
+        then
+            echo "INFO: Creating extra folder: ${arr[$i]}"
+            mkdir -p "${arr[$i]}"
+        fi
+    done
+}
+
+create_extra_folders  "${extra_folders[@]}"
+
+echo "Organizing your messy ${target_folder} folder"
 
 #Audio Files
 sorting "${audio_f}"    "${audio_array[@]}"
